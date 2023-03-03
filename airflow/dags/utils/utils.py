@@ -3,7 +3,6 @@ import string
 
 import pandas as pd
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from sqlalchemy import text
 from sqlalchemy.engine import Engine
 
 
@@ -40,8 +39,16 @@ def upsert_data_to_db(df: pd.DataFrame, table: str, primary_keys: list) -> bool:
         """
 
     with create_engine().begin() as con:
-        con.exec_driver_sql(text(query_temp_table))
+        con.exec_driver_sql(query_temp_table)
         df.to_sql(temp_table, con=con, index=False, if_exists="append")
-        con.exec_driver_sql(text(query_upsert))
+        con.exec_driver_sql(query_upsert)
 
     return True
+
+
+def fillna_numeric_cols(df: pd.DataFrame, value: int = 0) -> pd.DataFrame:
+    df = df.copy()
+    for col in df:
+        if df[col].dtype in ("int", "float"):
+            df[col] = df[col].fillna(value)
+    return df
