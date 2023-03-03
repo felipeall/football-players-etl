@@ -49,7 +49,8 @@ CREATE TABLE public.competitions (
     "category.id" text,
     "category.name" text,
     "category.country_code" text,
-    parent_id text
+    parent_id text,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -122,7 +123,7 @@ CREATE TABLE public.players (
     id text NOT NULL,
     name text,
     type text,
-    date_of_birth timestamp without time zone,
+    date_of_birth date,
     nationality text,
     country_code text,
     height double precision,
@@ -144,10 +145,11 @@ ALTER TABLE public.players OWNER TO postgres;
 CREATE TABLE public.seasons (
     id text NOT NULL,
     name text,
-    start_date text,
-    end_date text,
+    start_date date,
+    end_date date,
     year text,
-    competition_id text
+    competition_id text,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
