@@ -40,11 +40,16 @@ def get_matches_statistics(**kwargs):
         matches_statistics = sportradar.get_season_matches_statistics(season_urn=season)
         matches_statistics = matches_statistics.dropna(subset=["players_id"])
         matches_statistics = fillna_numeric_cols(matches_statistics)
-        upsert_data_to_db(
-            matches_statistics,
-            table="matches_statistics",
-            primary_keys=["id", "players_id"],
-        )
+        upsert_data_to_db(matches_statistics, table="matches_statistics", primary_keys=["id", "players_id"])
+
+
+def get_players(**kwargs):
+    seasons = _parse_kwargs(kwargs)
+    sportradar = SoccerExtendedPandas()
+
+    for season in seasons:
+        players = sportradar.get_season_competitor_player(season_urn=season)
+        upsert_data_to_db(players, table="players", primary_keys=["id"])
 
 
 with DAG(
@@ -68,4 +73,9 @@ with DAG(
         python_callable=get_matches_statistics,
     )
 
-get_competitions >> get_seasons >> get_matches_statistics
+    get_players = PythonOperator(
+        task_id="get_players",
+        python_callable=get_players,
+    )
+
+get_competitions >> get_seasons >> get_matches_statistics >> get_players
