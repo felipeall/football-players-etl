@@ -1,7 +1,7 @@
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 from sportradar_api import SoccerExtendedPandas
-from utils.utils import upsert_data_to_db, fillna_numeric_cols
+from utils.utils import fillna_numeric_cols, upsert_data_to_db
 
 from airflow import DAG
 
@@ -12,9 +12,7 @@ def _parse_kwargs(kwargs: dict) -> list:
 
     seasons = params.get("seasons")
 
-    assert (
-        seasons
-    ), 'Please use "seasons" as the JSON key. Example: {"seasons": ["sr:season:1", "sr:season:2", ...]}'
+    assert seasons, 'Please use "seasons" as the JSON key. Example: {"seasons": ["sr:season:1", "sr:season:2", ...]}'
     assert isinstance(
         seasons, list
     ), 'Please use a list as the JSON value. Example: {"seasons": ["sr:season:1", "sr:season:2", ...]}'

@@ -22,12 +22,8 @@ def upsert_data_to_db(df: pd.DataFrame, table: str, primary_keys: list) -> bool:
     cols = list(df.columns)
     cols_insert = ", ".join([f'"{col}"' for col in cols])
     cols_pk = ", ".join([f'"{col}"' for col in primary_keys])
-    cols_update = ", ".join(
-        [f'"{col}" = EXCLUDED."{col}"' for col in cols if col not in primary_keys]
-    )
-    query_temp_table = (
-        f"CREATE TEMPORARY TABLE {temp_table} AS SELECT * FROM {table} WHERE FALSE"
-    )
+    cols_update = ", ".join([f'"{col}" = EXCLUDED."{col}"' for col in cols if col not in primary_keys])
+    query_temp_table = f"CREATE TEMPORARY TABLE {temp_table} AS SELECT * FROM {table} WHERE FALSE"
     query_upsert = f"""
             INSERT INTO {table} ({cols_insert})
             SELECT {cols_insert}
