@@ -1,3 +1,10 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.14 (Debian 12.14-1.pgdg110+1)
+-- Dumped by pg_dump version 15.1 (Debian 15.1-1.pgdg110+1)
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -145,3 +152,47 @@ CREATE TABLE public.seasons (
 
 
 ALTER TABLE public.seasons OWNER TO postgres;
+
+--
+-- Name: competitions competitions_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.competitions
+    ADD CONSTRAINT competitions_pk PRIMARY KEY (id);
+
+
+--
+-- Name: matches_statistics matches_statistics_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.matches_statistics
+    ADD CONSTRAINT matches_statistics_pk PRIMARY KEY (id, players_id);
+
+
+--
+-- Name: players players_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.players
+    ADD CONSTRAINT players_pk PRIMARY KEY (id);
+
+
+--
+-- Name: seasons seasons_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.seasons
+    ADD CONSTRAINT seasons_pk PRIMARY KEY (id);
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
