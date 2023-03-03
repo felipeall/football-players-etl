@@ -1,0 +1,92 @@
+version: '3.4'
+
+x-common:
+  &common
+  build: .
+  user: "${AIRFLOW_UID}:0"
+  env_file:
+    - .env
+  volumes:
+    - ./airflow/dags:/opt/airflow/dags
+    - ./airflow/logs:/opt/airflow/logs
+    - ./airflow/backups:/opt/airflow/backups
+    - /var/run/docker.sock:/var/run/docker.sock
+
+x-depends-on:
+  &depends-on
+  depends_on:
+    airflow-db:
+      condition: service_healthy
+    airflow-init:
+      condition: service_completed_successfully
+
+services:
+  app-db:
+    image: postgres:12
+    container_name: app-db
+    ports:
+      - "${APP_DATABASE_PORT}:5432"
+    environment:
+      - POSTGRES_USER=${APP_DATABASE_USER}
+      - POSTGRES_PASSWORD=${APP_DATABASE_PASSWORD}
+      - POSTGRES_DB=${APP_DATABASE_NAME}
+    volumes:
+      - app-db-volume:/var/lib/postgresql/data
+      - ./airflow/backups/app_db.sql:/docker-entrypoint-initdb.d/init.sql
+
+  airflow-db:
+    image: postgres:12
+    container_name: airflow-db
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+    env_file:
+      - .env
+
+  scheduler:
+    <<: *common
+    <<: *depends-on
+    container_name: airflow-scheduler
+    command: scheduler
+    restart: on-failure
+    ports:
+      - "8793:8793"
+
+  webserver:
+    <<: *common
+    <<: *depends-on
+    container_name: airflow-webserver
+    restart: always
+    command: webserver
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+
+  airflow-init:
+    <<: *common
+    container_name: airflow-init
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        mkdir -p /sources/logs /sources/dags /source/backups
+        chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,backups}
+        exec /entrypoint airflow version
+
+  airflow-conn:
+    <<: *common
+    container_name: airflow-conn
+    depends_on:
+      webserver:
+        condition: service_healthy
+    command: connections add 'app_database_conn' --conn-type 'postgres' --conn-login ${APP_DATABASE_USER} --conn-password ${APP_DATABASE_PASSWORD} --conn-host '${APP_DATABASE_HOST}'
+
+volumes:
+  app-db-volume:

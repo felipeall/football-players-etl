@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "football-players-etl"
+version = "0.1.0"
+description = ""
+authors = ["Felipe Allegretti <felipe@allegretti.me>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pandas = "^1.5.3"
+apache-airflow = {extras = ["postgres"], version = "^2.5.1"}
+sportradar-api = "^0.2.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+isort = "^5.12.0"
