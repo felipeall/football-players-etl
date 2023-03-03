@@ -2228,14 +2228,14 @@ pytzdata = ">=2020.1"
 
 [[package]]
 name = "platformdirs"
-version = "3.0.0"
+version = "3.1.0"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "platformdirs-3.0.0-py3-none-any.whl", hash = "sha256:b1d5eb14f221506f50d6604a561f4c5786d9e80355219694a1b244bcd96f4567"},
-    {file = "platformdirs-3.0.0.tar.gz", hash = "sha256:8a1228abb1ef82d788f74139988b137e78692984ec7b08eaa6c65f1723af28f9"},
+    {file = "platformdirs-3.1.0-py3-none-any.whl", hash = "sha256:13b08a53ed71021350c9e300d4ea8668438fb0046ab3937ac9a29913a1a1350a"},
+    {file = "platformdirs-3.1.0.tar.gz", hash = "sha256:accc3665857288317f32c7bebb5a8e482ba717b474f3fc1d18ca7f9214be0cef"},
 ]
 
 [package.extras]
@@ -2811,14 +2811,14 @@ files = [
 
 [[package]]
 name = "sportradar-api"
-version = "0.2.2"
+version = "0.2.3"
 description = "Lightweight wrapper for Sportradar API"
 category = "main"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "sportradar-api-0.2.2.tar.gz", hash = "sha256:f88443e9670c8b8c294afba63358cbbc7dc79961756b6122d589b3f766ab9889"},
-    {file = "sportradar_api-0.2.2-py3-none-any.whl", hash = "sha256:85fd621b73bcedac9936be2485dc5d5161aea20e088e387c7f6f54f44e0b450e"},
+    {file = "sportradar-api-0.2.3.tar.gz", hash = "sha256:5dcfe2620b1700da42a219077c449a65c9faf7c3283b7055ded36029b0fa838b"},
+    {file = "sportradar_api-0.2.3-py3-none-any.whl", hash = "sha256:693275be1adb6c256a1a3e0534eb8ad9b2417ee70a0479e9b4ed12deb9b0e9cb"},
 ]
 
 [package.dependencies]
@@ -3309,4 +3309,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "48070fe63b754575bbdb8cdc558f1c9e4336cf07d127ed1723ebbffe0fbfed27"
+content-hash = "5b7e8ebff64bd21ff0e84064b968d57a4e024c902c0f83530270da4364124d32"
