@@ -42,6 +42,24 @@ def upsert_data_to_db(df: pd.DataFrame, table: str, primary_keys: list) -> bool:
     return True
 
 
+def retrieve_missing_players():
+    query = """
+        SELECT DISTINCT ms.players_id 
+        FROM matches_statistics ms 
+        LEFT JOIN players p
+        ON p.id = ms.players_id 
+        WHERE p.id IS NULL
+        """
+
+    engine = create_engine()
+
+    with engine.begin() as con:
+        res = con.exec_driver_sql(query)
+        players_missing = res.scalars().all()
+
+    return players_missing
+
+
 def fillna_numeric_cols(df: pd.DataFrame, value: int = 0) -> pd.DataFrame:
     df = df.copy()
     for col in df:

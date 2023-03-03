@@ -1,7 +1,7 @@
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 from sportradar_api import SoccerExtendedPandas
-from utils.utils import fillna_numeric_cols, upsert_data_to_db
+from utils.utils import fillna_numeric_cols, retrieve_missing_players, upsert_data_to_db
 
 from airflow import DAG
 
@@ -52,6 +52,18 @@ def get_players(**kwargs):
         upsert_data_to_db(players, table="players", primary_keys=["id"])
 
 
+def get_missing_players():
+    players_missing = retrieve_missing_players()
+
+    if players_missing:
+        sportradar = SoccerExtendedPandas()
+
+        for player_urn in players_missing:
+            player = sportradar.get_player_profile_info(player_urn=player_urn)
+            player = player.rename(columns={"player_id": "id"}).drop(columns="gender")
+            upsert_data_to_db(player, table="players", primary_keys=["id"])
+
+
 with DAG(
     dag_id="football_players_etl",
     start_date=days_ago(1),
@@ -78,4 +90,9 @@ with DAG(
         python_callable=get_players,
     )
 
-get_competitions >> get_seasons >> get_matches_statistics >> get_players
+    get_missing_players = PythonOperator(
+        task_id="get_missing_players",
+        python_callable=get_missing_players,
+    )
+
+get_competitions >> get_seasons >> get_matches_statistics >> get_players >> get_missing_players
