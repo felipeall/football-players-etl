@@ -5,7 +5,7 @@ ETL pipeline to retrieve football matches statistics from [Sportradar](https://s
 ### Setup
 
 1. Register on [Sportradar Developer](https://developer.sportradar.com/member/register)
-2. Create a [New Appication](https://developer.sportradar.com/apps/register)
+2. Create a [New Application](https://developer.sportradar.com/apps/register)
    1. Select the option "Issue a new key for Soccer Extended Trial"
 3. Get the generated key
 
@@ -42,9 +42,15 @@ Access the Airflow UI
 http://localhost:8080
 ````
 
-Trigger the `football_players_etl` DAG with a season payload
+Use the credentials defined in .env. Default:
 ````
-{"seasons": ["sr:season:94215"]}
+uername: airflow
+password: airflow
+````
+
+Trigger the `football_players_etl` DAG with seasons payload. Example
+````
+{"seasons": ["sr:season:94215", "sr:season:84048", "sr:season:77361"]}
 ````
 ---
 Available seasons:
