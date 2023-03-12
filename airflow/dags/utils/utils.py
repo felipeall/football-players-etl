@@ -66,3 +66,17 @@ def fillna_numeric_cols(df: pd.DataFrame, value: int = 0) -> pd.DataFrame:
         if df[col].dtype in ("int", "float"):
             df[col] = df[col].fillna(value)
     return df
+
+
+def parse_kwargs(kwargs: dict) -> list:
+    params = kwargs.get("params")
+    assert params, "Please trigger the DAG with a configuration JSON"
+
+    seasons = params.get("seasons")
+
+    assert seasons, 'Please use "seasons" as the JSON key. Example: {"seasons": ["sr:season:1", "sr:season:2", ...]}'
+    assert isinstance(
+        seasons, list
+    ), 'Please use a list as the JSON value. Example: {"seasons": ["sr:season:1", "sr:season:2", ...]}'
+
+    return seasons

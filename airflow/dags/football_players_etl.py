@@ -1,23 +1,9 @@
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 from sportradar_api import SoccerExtendedPandas
-from utils.utils import fillna_numeric_cols, retrieve_missing_players, upsert_data_to_db
+from utils.utils import fillna_numeric_cols, retrieve_missing_players, upsert_data_to_db, parse_kwargs
 
 from airflow import DAG
-
-
-def _parse_kwargs(kwargs: dict) -> list:
-    params = kwargs.get("params")
-    assert params, "Please trigger the DAG with a configuration JSON"
-
-    seasons = params.get("seasons")
-
-    assert seasons, 'Please use "seasons" as the JSON key. Example: {"seasons": ["sr:season:1", "sr:season:2", ...]}'
-    assert isinstance(
-        seasons, list
-    ), 'Please use a list as the JSON value. Example: {"seasons": ["sr:season:1", "sr:season:2", ...]}'
-
-    return seasons
 
 
 def get_competitions():
@@ -33,7 +19,7 @@ def get_seasons():
 
 
 def get_matches_statistics(**kwargs):
-    seasons = _parse_kwargs(kwargs)
+    seasons = parse_kwargs(kwargs)
     sportradar = SoccerExtendedPandas()
 
     for season in seasons:
@@ -44,7 +30,7 @@ def get_matches_statistics(**kwargs):
 
 
 def get_players(**kwargs):
-    seasons = _parse_kwargs(kwargs)
+    seasons = parse_kwargs(kwargs)
     sportradar = SoccerExtendedPandas()
 
     for season in seasons:
